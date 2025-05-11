@@ -1,8 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
-
 from sklearn.datasets import load_iris
+
 # Load the dataset
 data = load_iris()
 X = data.data
@@ -12,7 +11,7 @@ def euclid(a, b):
     # normfunc from linaer algebra
     return np.linalg.norm(a - b, axis=1)
 
-# K-means algorithm implementation with three randoms
+# self-written K-means algorithm implementation 
 def kmeans(X, k=3, max_iteration=300, upper_limit=1e-6):
 
     n_samples, n_features = X.shape  # assigned 150 samples and 4 features from dataset X
@@ -45,32 +44,37 @@ def kmeans(X, k=3, max_iteration=300, upper_limit=1e-6):
         iteration_losses.append(loss)
 
         # check if updated results nearly same as previous ones
+        
         #if euclid(new_centroids, centroids) < upper_limit:
-        #if euclid(new_centroids, centroids).sum() < upper_limit:   
+    #if euclid(new_centroids, centroids).sum() < upper_limit:   
         if np.linalg.norm(new_centroids - centroids) < upper_limit:
             break
 
+        # update centroids for next iteration
         centroids = new_centroids
 
     return labels, centroids, loss, iteration_losses
 
 # Run K-means 10 times and select the best result
-best_loss = np.inf
 best_run_losses = []
+best_loss = np.inf
 best_centroids = None
 best_labels = None
 
 for i in range(10):
     labels, centroids, loss, losses = kmeans(X, k=3)
     if loss < best_loss:
+        # Update the best results
         best_loss = loss
         best_run_losses = losses
+
         best_centroids = centroids
+
         best_labels = labels
 
+
+
 # Print best centroids, labels, and SSE
-
-
 print("Best Centroids:")
 for i, centroid in enumerate(best_centroids):
     print(f"Centroid {i}: {np.round(centroid, 4)}")
